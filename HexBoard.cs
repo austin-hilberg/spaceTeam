@@ -4,10 +4,8 @@ using UnityEngine;
 
 public class HexBoard : MonoBehaviour
 {
-    public GameObject hex;
-
-    int nRows = 3;
-    int nCols = 3;
+    public GameObject baseHex;
+    Dictionary<int, Dictionary<int, GameObject>> diagonals = new Dictionary<int, Dictionary<int, GameObject>>();
     
     float gridScale = 1f;
     float rootThree = Mathf.Sqrt(3);
@@ -17,10 +15,19 @@ public class HexBoard : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
+        SetupBoard(2);
     }
 
-    void SetupBoard() {
-        
+    void SetupBoard(int radius) {
+
+        for (int q = -radius; q <= radius; q ++) {
+            for (int r = -radius; r <= radius; r++) {
+                if (HexDistance(q, r) <= radius) {
+                    AddHex(q, r, baseHex);
+                }
+            }
+        }
+        baseHex.SetActive(false);
     }
 
     // Update is called once per frame
@@ -35,6 +42,22 @@ public class HexBoard : MonoBehaviour
 
     public float GetY(int r) {
         return gridScale * rootThreeHalf * r;
+    }
+
+    public int HexDistance(int q1, int r1, int q2, int r2) {
+        return CubeDistance(AxialToCube(q1, r1), AxialToCube(q2, r2));
+    }
+
+    public int HexDistance(Vector2 hexCoord1, Vector2 hexCoord2) {
+        return HexDistance((int) hexCoord1.x, (int)  hexCoord1.y, (int)  hexCoord2.x, (int)  hexCoord2.y);
+    }
+
+    public int HexDistance(int q, int r){
+        return HexDistance(q, r, 0, 0);
+    }
+
+    public int HexDistance(Vector2 hexCoord) {
+        return HexDistance((int) hexCoord.x, (int) hexCoord.y);
     }
 
     public Vector2 HexRound(float q, float r) {
@@ -62,6 +85,22 @@ public class HexBoard : MonoBehaviour
         return CubeToAxial(cubeCoord.x, cubeCoord.z);
     }
 
+    public int CubeDistance(int a1, int b1, int c1, int a2, int b2, int c2) {
+        return (Mathf.Abs(a1 - a2) + Mathf.Abs(b1 - b2) + Mathf.Abs(c1 - c2)) / 2;
+    }
+
+    public int CubeDistance(Vector3 cubeCoord1, Vector3 cubeCoord2) {
+        return CubeDistance((int) cubeCoord1.x, (int) cubeCoord1.y, (int) cubeCoord1.z, (int) cubeCoord2.x, (int) cubeCoord2.y, (int) cubeCoord2.z);
+    }
+
+    public int CubeDistance(int a, int b, int c) {
+        return CubeDistance(a, b, c, 0, 0, 0);
+    }
+
+    public int CubeDistance(Vector3 cubeCoord) {
+        return CubeDistance((int) cubeCoord.x, (int)  cubeCoord.y, (int)  cubeCoord.z);
+    }
+
     public Vector3 CubeRound(float a, float b, float c) {
         int roundA = Mathf.RoundToInt(a);
         int roundB = Mathf.RoundToInt(b);
@@ -71,20 +110,41 @@ public class HexBoard : MonoBehaviour
         float deltaB = Mathf.Abs(roundB - b);
         float deltaC = Mathf.Abs(roundC - c);
 
-        if (deltaA > deltaB & deltaA > deltaAC) {
-            roundA = -1f * (roundB + roundC);
+        if (deltaA > deltaB && deltaA > deltaC) {
+            roundA = -1 * (roundB + roundC);
         }
         else if (deltaB > deltaC) {
-            roundB = -1f * (roundA + roundC);
+            roundB = -1 * (roundA + roundC);
         }
         else {
-            rz = -1f * (roundA + roundB);
+            roundC = -1 * (roundA + roundB);
         }
         return new Vector3(roundA, roundB, roundC);
     }
 
     public Vector3 CubeRound(Vector3 cubeCoord) {
         return CubeRound(cubeCoord.x, cubeCoord.y, cubeCoord.z);
+    }
+
+    bool CheckHex(int q, int r) {
+        return diagonals.ContainsKey(q) && diagonals[q].ContainsKey(r);
+    }
+
+    GameObject GetHex(int q, int r) {
+        return diagonals[q][r];
+    }
+
+    void AddHex(int q, int r, GameObject hex) {
+        
+        Dictionary<int, GameObject> diagonal;
+        if (diagonals.ContainsKey(q)) {
+            diagonal = diagonals[q];
+        }
+        else {
+            diagonal = new Dictionary<int, GameObject>();
+            diagonals.Add(q, diagonal);
+        }
+        diagonal.Add(r, Instantiate(hex, new Vector3(GetX(q, r), GetY(r), 0f), new Quaternion()));
     }
 
 }
