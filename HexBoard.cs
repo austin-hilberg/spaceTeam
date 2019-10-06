@@ -15,7 +15,7 @@ public class HexBoard : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        SetupBoard(2);
+        SetupBoard(3);
     }
 
     void SetupBoard(int radius) {
@@ -37,11 +37,11 @@ public class HexBoard : MonoBehaviour
     }
 
     public float GetX(int q, int r) {
-        return gridScale * (rootThree * q + rootThreeHalf * r);
+        return gridScale * (2 * q + r);
     }
 
     public float GetY(int r) {
-        return gridScale * rootThreeHalf * r;
+        return gridScale * rootThree * r * (-1f);
     }
 
     public int HexDistance(int q1, int r1, int q2, int r2) {
