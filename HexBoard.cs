@@ -7,22 +7,20 @@ public class HexBoard : MonoBehaviour
     public GameObject baseHex;
     Dictionary<int, Dictionary<int, GameObject>> diagonals = new Dictionary<int, Dictionary<int, GameObject>>();
     
-    float gridScale = 1f;
+    float gridScale = 0.5f;
     float rootThree = Mathf.Sqrt(3);
-    float rootThreeHalf = Mathf.Sqrt(3) / 2f;
-
 
     // Start is called before the first frame update
     void Start()
     {
-        SetupBoard(3);
+        
     }
 
-    void SetupBoard(int radius) {
+    protected void AddBigHex(int radius, int qCenter, int rCenter) {
 
         for (int q = -radius; q <= radius; q ++) {
             for (int r = -radius; r <= radius; r++) {
-                if (HexDistance(q, r) <= radius) {
+                if (HexDistance(q, r, qCenter, rCenter) <= radius) {
                     AddHex(q, r, baseHex);
                 }
             }
@@ -126,15 +124,15 @@ public class HexBoard : MonoBehaviour
         return CubeRound(cubeCoord.x, cubeCoord.y, cubeCoord.z);
     }
 
-    bool CheckHex(int q, int r) {
+    public bool CheckHex(int q, int r) {
         return diagonals.ContainsKey(q) && diagonals[q].ContainsKey(r);
     }
 
-    GameObject GetHex(int q, int r) {
+    public GameObject GetHex(int q, int r) {
         return diagonals[q][r];
     }
 
-    void AddHex(int q, int r, GameObject hex) {
+    protected void AddHex(int q, int r, GameObject hex) {
         
         Dictionary<int, GameObject> diagonal;
         if (diagonals.ContainsKey(q)) {
