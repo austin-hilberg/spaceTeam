@@ -26,6 +26,8 @@ public class HexBoard : MonoBehaviour
             }
         }
         baseHex.SetActive(false);
+
+        TestCollinearity();
     }
 
     // Update is called once per frame
@@ -66,13 +68,28 @@ public class HexBoard : MonoBehaviour
         return HexRound(hexCoord.x, hexCoord.y);
     }
 
+    public int AxialToB(int q, int r) {
+        return -1 * (q + r);
+    }
+
+    public float AxialToB(float q, float r) {
+        return -1f * (q + r);
+    }
+
+    public Vector3 AxialToCube(int q, int r) {
+        return new Vector3(q, AxialToB(q, r), r);
+    }
+
     public Vector3 AxialToCube(float q, float r) {
-        float b = -1f * (q + r);
-        return new Vector3(q, b, r);
+        return new Vector3(q, AxialToB(q, r), r);
     }
 
     public Vector3 AxialToCube(Vector2 hexCoord) {
         return AxialToCube(hexCoord.x, hexCoord.y);
+    }
+
+    public Vector2 CubeToAxial(int a, int c) {
+        return new Vector2(a, c);
     }
 
     public Vector2 CubeToAxial(float a, float c) {
@@ -143,6 +160,40 @@ public class HexBoard : MonoBehaviour
             diagonals.Add(q, diagonal);
         }
         diagonal.Add(r, Instantiate(hex, new Vector3(GetX(q, r), GetY(r), 0f), new Quaternion()));
+    }
+
+    public bool CheckCollinearHex (int q1, int r1, int q2, int r2) {
+        return q1 == q2 || r1 == r2 || AxialToB(q1, r1) == AxialToB(q2, r2);
+    }
+
+    public bool CheckCollinearHex (Vector2 hexCoord1, Vector2 hexCoord2) {
+        return CheckCollinearHex ((int) hexCoord1.x, (int)  hexCoord1.y, (int)  hexCoord2.x, (int)  hexCoord2.y);
+    }
+
+    public bool CheckCollinearCube (int a1, int b1, int c1, int a2, int b2, int c2) {
+        return a1 == a2 || b1 == b2 || c1 == c2;
+    }
+
+    protected void TestCollinearity (){
+        Vector2 zeroAxial = new Vector2(0, 0);
+        Vector2 zeroCube = new Vector3(0, 0, 0);
+        Vector2 botLeft = new Vector2(-6, 6);
+        Vector2 botRight = new Vector2(0, 6);
+        Vector2 mid = new Vector2(-2, 4);
+
+        Debug.Log("Left: " + CheckCollinearHex(botLeft, zeroAxial));
+        Debug.Log("Right: " + CheckCollinearHex(botRight, zeroAxial));
+        Debug.Log("Bot: " + CheckCollinearHex(botLeft, botRight));
+        Debug.Log("Not With Zero: " + CheckCollinearHex(zeroAxial, mid));
+        Debug.Log("Not With botLeft: " + CheckCollinearHex(botLeft, mid));
+        Debug.Log("Not With botRight: " + CheckCollinearHex(botRight, mid));
+
+        Vector2 startAxial = new Vector2(-3, 6);
+        Vector2 endAxial = new Vector2(3, -6);
+        Vector2 mid1 = new Vector2(3, 0);
+        Vector2 mid2 = new Vector2(0, 3);
+
+        
     }
 
 }
