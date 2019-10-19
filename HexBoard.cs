@@ -4,7 +4,6 @@ using UnityEngine;
 
 public class HexBoard : MonoBehaviour
 {
-    public GameObject baseHex;
     Dictionary<int, Dictionary<int, GameObject>> diagonals = new Dictionary<int, Dictionary<int, GameObject>>();
     
     float gridScale = 0.5f;
@@ -16,24 +15,21 @@ public class HexBoard : MonoBehaviour
         
     }
 
-    protected void AddBigHex(int radius, int qCenter, int rCenter) {
-
-        for (int q = -radius; q <= radius; q ++) {
-            for (int r = -radius; r <= radius; r++) {
-                if (HexDistance(q, r, qCenter, rCenter) <= radius) {
-                    AddHex(q, r, baseHex);
-                }
-            }
-        }
-        baseHex.SetActive(false);
-
-        TestCollinearity();
-    }
-
     // Update is called once per frame
     void Update()
     {
         
+    }
+
+    protected void AddBigHex(GameObject hex, int radius, int qCenter, int rCenter) {
+
+        for (int q = -radius; q <= radius; q ++) {
+            for (int r = -radius; r <= radius; r++) {
+                if (HexDistance(q, r, qCenter, rCenter) <= radius) {
+                    AddHex(q, r, hex);
+                }
+            }
+        }
     }
 
     public float GetX(int q, int r) {
