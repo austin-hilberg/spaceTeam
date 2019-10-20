@@ -10,29 +10,45 @@ public class NavNode : MonoBehaviour {
 
 	GameObject[] rings;
 	Material[] materials;
-	GameObject sphere;
-	GameObject cube;
+	GameObject[] shapes;
+
+	float baseRotation = 90f;
+	float positionDelta = 120f;
 
 	int[] properties;
 
 	// Use this for initialization
 	void Start () {
+	}
+
+	public void Configure(int ring, int position, int color, int shape) {
 		GameObject innerRing = transform.Find("Inner").gameObject;
 		GameObject midRing = transform.Find("Mid").gameObject;
 		GameObject outerRing = transform.Find("Outer").gameObject;
 		rings = new GameObject[] {innerRing, midRing, outerRing};
 
+		GameObject sphere = transform.Find("Sphere").gameObject;
+		GameObject cube = transform.Find("Cube").gameObject;
+		GameObject hex = transform.Find("Hex").gameObject;
+		shapes = new GameObject[] {sphere, cube, hex};
+
 		materials = new Material[] {color0, color1, color2};
 
-		sphere = transform.Find("Sphere").gameObject;
-		cube = transform.Find("Cube").gameObject;
-	}
-
-	void Configure(int ring, int position, int color, int shape) {
 		properties = new int[4] {ring, position, color, shape};
+		foreach (int value in properties) {
+			Debug.Log(value);
+		}
+
+		foreach (GameObject ringObj in rings) {
+			ringObj.transform.Rotate(0f, 0f, baseRotation + positionDelta * position, Space.World);
+		}
 
 		rings[ring].GetComponent<MeshRenderer>().material = materials[color];
 
+		shapes[shape].GetComponent<MeshRenderer>().material = materials[color];
+		for (int i = 0; i < shapes.Length; i++) {
+			shapes[i].SetActive(i == shape);
+		}
 		
 	}
 	
