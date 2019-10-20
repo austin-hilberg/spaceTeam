@@ -48,6 +48,10 @@ public class NavNode : MonoBehaviour {
 		}
 		
 	}
+
+	public int[] GetProperties() {
+		return properties;
+	}
 	
 	// Update is called once per frame
 	void Update () {

@@ -7,7 +7,10 @@ public class NavigationBoard : HexBoard {
 	public GameObject baseHex;
 	List<int> deck = new List<int>();
 	int deckSize = 81;
-	int nParams = 3;
+	int nParamValues = 3;
+	int nParams = 4;
+	int drawSize = 21;
+	List<GameObject> cardsOnBoard = new List<GameObject>();
 
 	void Start () {
 		for (int i = 0; i < deckSize; i++) {
@@ -16,9 +19,10 @@ public class NavigationBoard : HexBoard {
 		ShuffleDeck();
 
 		for (int r = -1; r < 2; r ++) {
-			for (int q = -3; q < (3 - r); q++) {
+			for (int q = -3; q < (4 - r); q++) {
 				GameObject newHex = Draw();
 				SetHex(q, r, newHex);
+				cardsOnBoard.Add(newHex);
 			}
 		}
 		
@@ -41,7 +45,6 @@ public class NavigationBoard : HexBoard {
 
 	GameObject Draw() {
 		int card = deck[0];
-		Debug.Log("Card: " + card);
 		GameObject newCard = GenerateCard(card);
 		deck.RemoveAt(0);
 		return newCard;
@@ -50,12 +53,34 @@ public class NavigationBoard : HexBoard {
 	GameObject GenerateCard(int n) {
 		GameObject newCard = Object.Instantiate(baseHex, transform);
 		NavNode newNode = newCard.GetComponent<NavNode>();
-		int ring = n % nParams;
-		int position = (n / nParams) % nParams;
-		int color = ((n / nParams) / nParams) % nParams;
-		int shape = (((n / nParams) / nParams) / nParams) % nParams;
+		int ring = n % nParamValues;
+		int position = (n / nParamValues) % nParamValues;
+		int color = ((n / nParamValues) / nParamValues) % nParamValues;
+		int shape = (((n / nParamValues) / nParamValues) / nParamValues) % nParamValues;
 		newNode.Configure(ring, position, color, shape);
 
 		return newCard;
+	}
+
+	int[] CompleteCluster(NavNode node1, NavNode node2) {
+		int[] props1 = node1.GetProperties();
+		int[] props2 = node2.GetProperties();
+		int[] props3 = new int[nParams];
+		for (int i = 0; i < nParams; i++) {
+			props3[i] = (nParamValues - props1[i] - props2[i]) % nParamValues;
+		}
+		return props3;
+	}
+
+	bool CheckCluster(NavNode node1, NavNode node2, NavNode node3) {
+		int[] props1 = node1.GetProperties();
+		int[] props2 = node2.GetProperties();
+		int[] props3 = node3.GetProperties();
+		for (int i = 0; i < nParams; i++) {
+			if ((props1[i] + props2[i] + props3[i]) % nParamValues != 0) {
+				return false;
+			}
+		}
+		return true;
 	}
 }
