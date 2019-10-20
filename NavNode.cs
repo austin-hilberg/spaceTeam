@@ -35,9 +35,6 @@ public class NavNode : MonoBehaviour {
 		materials = new Material[] {color0, color1, color2};
 
 		properties = new int[4] {ring, position, color, shape};
-		foreach (int value in properties) {
-			Debug.Log(value);
-		}
 
 		foreach (GameObject ringObj in rings) {
 			ringObj.transform.Rotate(0f, 0f, baseRotation + positionDelta * position, Space.World);

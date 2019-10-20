@@ -15,7 +15,12 @@ public class NavigationBoard : HexBoard {
 		}
 		ShuffleDeck();
 
-		GameObject newHex = Draw();
+		for (int r = -1; r < 2; r ++) {
+			for (int q = -3; q < (3 - r); q++) {
+				GameObject newHex = Draw();
+				SetHex(q, r, newHex);
+			}
+		}
 		
 		baseHex.SetActive(false);
 	}
@@ -36,8 +41,9 @@ public class NavigationBoard : HexBoard {
 
 	GameObject Draw() {
 		int card = deck[0];
+		Debug.Log("Card: " + card);
 		GameObject newCard = GenerateCard(card);
-		deck.Remove(0);
+		deck.RemoveAt(0);
 		return newCard;
 	}
 

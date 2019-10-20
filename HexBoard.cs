@@ -6,7 +6,7 @@ public class HexBoard : MonoBehaviour
 {
     Dictionary<int, Dictionary<int, GameObject>> diagonals = new Dictionary<int, Dictionary<int, GameObject>>();
     
-    float gridScale = 0.5f;
+    float gridScale = 1f;
     float rootThree = Mathf.Sqrt(3);
 
     // Start is called before the first frame update
@@ -26,7 +26,7 @@ public class HexBoard : MonoBehaviour
         for (int q = -radius; q <= radius; q ++) {
             for (int r = -radius; r <= radius; r++) {
                 if (HexDistance(q, r, qCenter, rCenter) <= radius) {
-                    AddHex(q, r, hex);
+                    SetHex(q, r, hex);
                 }
             }
         }
@@ -145,8 +145,10 @@ public class HexBoard : MonoBehaviour
         return diagonals[q][r];
     }
 
-    protected void AddHex(int q, int r, GameObject hex) {
+    protected void SetHex(int q, int r, GameObject hex) {
         
+        hex.transform.Translate(new Vector3(GetX(q, r), GetY(r), 0f));
+
         Dictionary<int, GameObject> diagonal;
         if (diagonals.ContainsKey(q)) {
             diagonal = diagonals[q];
@@ -155,7 +157,12 @@ public class HexBoard : MonoBehaviour
             diagonal = new Dictionary<int, GameObject>();
             diagonals.Add(q, diagonal);
         }
-        diagonal.Add(r, Instantiate(hex, new Vector3(GetX(q, r), GetY(r), 0f), new Quaternion()));
+        if (diagonal.ContainsKey(r)) {
+            diagonal[r] = hex;
+        }
+        else {
+            diagonal.Add(r, hex);
+        }
     }
 
     public bool CheckCollinearHex (int q1, int r1, int q2, int r2) {
