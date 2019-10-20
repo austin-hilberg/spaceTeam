@@ -22,6 +22,9 @@ public class NavNode : MonoBehaviour {
 	}
 
 	public void Configure(int ring, int position, int color, int shape) {
+
+		transform.Find("Back").Rotate(0f, 0f, baseRotation, Space.World);
+
 		GameObject innerRing = transform.Find("Inner").gameObject;
 		GameObject midRing = transform.Find("Mid").gameObject;
 		GameObject outerRing = transform.Find("Outer").gameObject;
