@@ -12,7 +12,6 @@ public class HexBoard : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        
     }
 
     // Update is called once per frame
@@ -38,6 +37,22 @@ public class HexBoard : MonoBehaviour
 
     public float GetY(int r) {
         return gridScale * rootThree * r * (-1f);
+    }
+
+    public Vector2 GetXY(int q, int r) {
+        return new Vector2(GetX(q, r), GetY(r));
+    }
+
+    public Vector2 GetXY(Vector2 hexCoord) {
+        return GetXY((int) hexCoord.x, (int) hexCoord.y);
+    }
+
+    public Vector3 GetXYZ(int q, int r) {
+        return new Vector3(GetX(q, r), GetY(r), 0f);
+    }
+
+    public Vector3 GetXYZ (Vector2 hexCoord) {
+        return GetXYZ((int) hexCoord.x, (int) hexCoord.y);
     }
 
     public int HexDistance(int q1, int r1, int q2, int r2) {
@@ -141,6 +156,10 @@ public class HexBoard : MonoBehaviour
         return diagonals.ContainsKey(q) && diagonals[q].ContainsKey(r);
     }
 
+    public bool CheckHex(Vector2 hexCoord) {
+        return CheckHex((int) hexCoord.x, (int) hexCoord.y);
+    }
+
     public GameObject GetHex(int q, int r) {
         return diagonals[q][r];
     }
@@ -195,8 +214,6 @@ public class HexBoard : MonoBehaviour
         Vector2 endAxial = new Vector2(3, -6);
         Vector2 mid1 = new Vector2(3, 0);
         Vector2 mid2 = new Vector2(0, 3);
-
-        
     }
 
 }

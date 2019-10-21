@@ -5,6 +5,7 @@ using UnityEngine;
 public class NavigationBoard : HexBoard {
 	
 	public GameObject baseHex;
+	public GameObject indicatorObj;
 	List<int> deck = new List<int>();
 	int deckSize = 81;
 	int nParamValues = 3;
@@ -12,7 +13,18 @@ public class NavigationBoard : HexBoard {
 	int drawSize = 21;
 	List<GameObject> cardsOnBoard = new List<GameObject>();
 
+	Vector2 indicatorCoords;
+
+	List<Vector2> directionVectors = new List<Vector2>();
+
 	void Start () {
+        directionVectors.Add(new Vector2(1, 0));
+		directionVectors.Add(new Vector2(1, -1));
+		directionVectors.Add(new Vector2(0, -1));
+		directionVectors.Add(new Vector2(-1, 0));
+		directionVectors.Add(new Vector2(-1, 1));
+		directionVectors.Add(new Vector2(0, 1));
+
 		for (int i = 0; i < deckSize; i++) {
 			deck.Add(i);
 		}
@@ -27,6 +39,8 @@ public class NavigationBoard : HexBoard {
 		}
 		
 		baseHex.SetActive(false);
+
+		indicatorCoords = Vector2.zero;
 	}
 
 	// Update is called once per frame
@@ -82,5 +96,17 @@ public class NavigationBoard : HexBoard {
 			}
 		}
 		return true;
+	}
+	
+    public bool MoveIndicator (int direction) {
+		Debug.Log("Direction " + direction + ": " + directionVectors[direction]);
+		if (CheckHex(indicatorCoords + directionVectors[direction])) {
+			indicatorCoords += directionVectors[direction];
+			indicatorObj.transform.Translate(GetXYZ(directionVectors[direction]), Space.World);
+			return true;
+		}
+		else {
+			return false;
+		}
 	}
 }
